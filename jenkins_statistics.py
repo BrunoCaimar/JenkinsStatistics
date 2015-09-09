@@ -24,8 +24,7 @@ def __get_build_info(jenkins_url,
                      jenkins_username,
                      jenkins_password,
                      job_name,
-                     build_number,
-                     queue=None):
+                     build_number):
     build_info = None
 
     try:
@@ -36,11 +35,9 @@ def __get_build_info(jenkins_url,
                               jenkins_password)
         build_info = ref.get_build_info(job_name,
                                         build_number)
-    except KeyError as e:
+    except Exception as e:
         print u"Erro ao obter build_info: {0} - {1}".format(job_name,
                                                             e.message)
-    if queue is not None:
-        queue.put(build_info)
     return build_info
 
 
@@ -71,6 +68,9 @@ def get_jobs_details(jenkins_url,
         print job
 
         builds = __get_builds_list(jenkins_reference, job)
+
+        print 'builds:', len(builds)
+
         pool = mp.Pool(processes=mp.cpu_count())
 
         results = [pool.apply_async(__get_build_info,
