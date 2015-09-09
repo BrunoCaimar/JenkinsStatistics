@@ -5,7 +5,7 @@ from JenkinsStatistics import jenkins_statistics_config
 
 
 def obter_dados():
-    dados = jenkins_statistics.get_jobs_info(
+    dados = jenkins_statistics.get_jobs_details(
         jenkins_statistics_config.jenkins_url,
         jenkins_statistics_config.jenkins_user,
         jenkins_statistics_config.jenkins_password)

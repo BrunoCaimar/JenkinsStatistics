@@ -3,9 +3,49 @@ from datetime import datetime
 import jenkins
 
 
-def get_jobs_info(jenkins_url,
-                  jenkins_user=None,
-                  jenkins_password=None):
+def __get_builds_list(jenkins_reference, job_name):
+    builds = []
+
+    try:
+        job_info = jenkins_reference.get_job_info(job_name)
+
+        if job_info is not None:
+            builds = [d['number'] for d in job_info['builds']]
+
+    except KeyError as e:
+        print u'Erro ao obter job_info: {0} - {1}'.format(job_name, e.message)
+
+    return builds
+
+
+def __get_build_info(jenkins_reference, job_name, build_number):
+    build_info = None
+
+    try:
+        build_info = jenkins_reference.get_build_info(job_name,
+                                                      build_number)
+    except KeyError as e:
+        print u"Erro ao obter build_info: {0} - {1}".format(job_name,
+                                                            e.message)
+    return build_info
+
+
+def __converter_build_info(job_name, build_number, build_info):
+    build_timestamp = build_info['timestamp']
+    build_result = build_info['result']
+    build_date = datetime.fromtimestamp(build_timestamp / 1000.0)
+
+    return dict(job_name=job_name,
+                build_number=build_number,
+                build_date=build_date,
+                build_date_month=build_date.month,
+                build_date_year=build_date.year,
+                build_result=build_result)
+
+
+def get_jobs_details(jenkins_url,
+                     jenkins_user=None,
+                     jenkins_password=None):
     jenkins_reference = jenkins.Jenkins(jenkins_url,
                                         jenkins_user,
                                         jenkins_password)
@@ -16,41 +56,17 @@ def get_jobs_info(jenkins_url,
     for job in jobs:
         print job
 
-        details = None
-
-        try:
-            details = jenkins_reference.get_job_info(job)
-        except KeyError as e:
-            print u'Erro ao obter job_info: {0} - {1}'.format(job, e.message)
-
-        builds = []
-        if details is not None:
-            builds = [d['number'] for d in details['builds']]
+        builds = __get_builds_list(jenkins_reference, job)
 
         for build_number in builds:
             print u'job: {1} build #{0}'.format(build_number, job)
 
-            try:
-                build_info = jenkins_reference.get_build_info(job,
-                                                              build_number)
-            except KeyError as e:
-                print u"Erro ao obter build_info: {0} - {1}".format(job,
-                                                                    e.message)
+            build_info = __get_build_info(jenkins_reference, job, build_number)
 
-            build_timestamp = build_info['timestamp']
-
-            build_date = datetime.fromtimestamp(build_timestamp / 1000.0)
-            build_result = build_info['result']
-
-            print build_result, build_date, build_timestamp
-            print "----------------------------------------------------------"
-
-            dados_jobs.append(dict(job_name=job,
-                                   build_number=build_number,
-                                   build_date=build_date,
-                                   build_date_month=build_date.month,
-                                   build_date_year=build_date.year,
-                                   build_result=build_result))
+            if build_info is not None:
+                dados_jobs.append(__converter_build_info(job,
+                                                         build_number,
+                                                         build_info))
 
     return dados_jobs
 
