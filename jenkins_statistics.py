@@ -1,14 +1,14 @@
 # coding=utf-8
 from datetime import datetime
-
 import jenkins
-import jenkins_statistics_config
 
 
-def get_jobs():
-    jenkins_reference = jenkins.Jenkins(jenkins_statistics_config.jenkins_url,
-                                        jenkins_statistics_config.jenkins_user,
-                                        jenkins_statistics_config.jenkins_password)
+def get_jobs_info(jenkins_url,
+                  jenkins_user=None,
+                  jenkins_password=None):
+    jenkins_reference = jenkins.Jenkins(jenkins_url,
+                                        jenkins_user,
+                                        jenkins_password)
 
     jobs = [job['name'] for job in jenkins_reference.get_jobs()]
     dados_jobs = []
@@ -20,8 +20,8 @@ def get_jobs():
 
         try:
             details = jenkins_reference.get_job_info(job)
-        except:
-            print '### ERRO ###'
+        except KeyError as ke:
+            print u'Erro ao obter job_info: {0} - {1}'.format(job, ke.message)
 
         builds = []
         if details is not None:
@@ -31,9 +31,11 @@ def get_jobs():
             print u'job: {1} build #{0}'.format(build_number, job)
 
             try:
-                build_info = jenkins_reference.get_build_info(job, build_number)
-            except:
-                print "### ERRO AO OBTER DADOS DO BUILD ###"
+                build_info = jenkins_reference.get_build_info(job,
+                                                              build_number)
+            except KeyError as ke:
+                print u"Erro ao obter build_info: {0} - {1}".format(job,
+                                                                    ke.message)
 
             build_timestamp = build_info['timestamp']
 
@@ -60,6 +62,13 @@ def gerar_summary_report_jobs_por_mes(jobs_info):
     return retorno
 
 
+def gerar_summary_report_builds_por_mes(jobs_info):
+    meses = obter_meses_disponiveis(jobs_info)
+    retorno = [(mes, obter_builds_por_resultado_no_mes_ano(mes, jobs_info))
+               for mes in sorted(meses)]
+    return retorno
+
+
 def format_mes_ano(job_info):
     return "{0:=02}/{1}".format(job_info['build_date_month'],
                                 job_info['build_date_year'])
@@ -80,29 +89,17 @@ def obter_jobs_no_mes_ano(mes_ano, jobs_info):
                      if format_mes_ano(job_info) == mes_ano[0]]))
 
 
-def print_report():
-    dados = get_jobs()
-    report = gerar_summary_report_jobs_por_mes(dados)
+def obter_builds_por_resultado_no_mes_ano(mes_ano, jobs_info):
+    jobs_info_mes_ano = [job_info for job_info in jobs_info
+                         if format_mes_ano(job_info) == mes_ano[0]]
 
-    sorted_data = sorted(report)
+    results = list(set([job_info['build_result']
+                        for job_info in jobs_info_mes_ano]))
 
-    titulo = [item[0][0]
-              for item in sorted_data
-              if item[0][2] == 2015]
-
-    dados = ["{0:^7}".format(item[1])
-             for item in sorted_data
-             if item[0][2] == 2015]
-
-    separador = '{:-^' + str(len(" | ".join(titulo))) + '}'
-
-    print separador.format('-')
-    print u" JOBS EXECUTADOS POR MÊS "
-    print separador.format('-')
-    print " | ".join(titulo)
-    print separador.format('-')
-    print " | ".join(dados)
-    print separador.format('-')
-
-
-print_report()
+    builds_por_resultado = []
+    for result in results:
+        builds_por_resultado.append((
+            result,
+            sum([1 for item in jobs_info_mes_ano
+                 if item['build_result'] == result])))
+    return builds_por_resultado
