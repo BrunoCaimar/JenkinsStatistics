@@ -20,8 +20,8 @@ def get_jobs_info(jenkins_url,
 
         try:
             details = jenkins_reference.get_job_info(job)
-        except KeyError as ke:
-            print u'Erro ao obter job_info: {0} - {1}'.format(job, ke.message)
+        except KeyError as e:
+            print u'Erro ao obter job_info: {0} - {1}'.format(job, e.message)
 
         builds = []
         if details is not None:
@@ -33,9 +33,9 @@ def get_jobs_info(jenkins_url,
             try:
                 build_info = jenkins_reference.get_build_info(job,
                                                               build_number)
-            except KeyError as ke:
+            except KeyError as e:
                 print u"Erro ao obter build_info: {0} - {1}".format(job,
-                                                                    ke.message)
+                                                                    e.message)
 
             build_timestamp = build_info['timestamp']
 
