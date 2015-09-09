@@ -1,14 +1,22 @@
 # coding=utf-8
 import os
+import datetime
+
 import jenkins_statistics
-from JenkinsStatistics import jenkins_statistics_config
+import jenkins_statistics_config
 
 
 def obter_dados():
+    inicio = datetime.datetime.now()
+    print "inicio obter dados:", inicio
+
     dados = jenkins_statistics.get_jobs_details(
         jenkins_statistics_config.jenkins_url,
         jenkins_statistics_config.jenkins_user,
         jenkins_statistics_config.jenkins_password)
+
+    print u"término obter dados: ", inicio, datetime.datetime.now()
+    print datetime.datetime.now() - inicio
     return dados
 
 
@@ -90,4 +98,5 @@ def report_builds_por_mes(dados):
     print separador.format('')
 
 
-print_reports(obter_dados())
+if __name__ == '__main__':
+    print_reports(obter_dados())

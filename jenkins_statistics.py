@@ -1,5 +1,7 @@
 # coding=utf-8
 from datetime import datetime
+import multiprocessing as mp
+
 import jenkins
 
 
@@ -18,15 +20,27 @@ def __get_builds_list(jenkins_reference, job_name):
     return builds
 
 
-def __get_build_info(jenkins_reference, job_name, build_number):
+def __get_build_info(jenkins_url,
+                     jenkins_username,
+                     jenkins_password,
+                     job_name,
+                     build_number,
+                     queue=None):
     build_info = None
 
     try:
-        build_info = jenkins_reference.get_build_info(job_name,
-                                                      build_number)
+        #  Tem que iniciar uma nova instancia pois esse metodo
+        #  está rodando em modo paralelo
+        ref = jenkins.Jenkins(jenkins_url,
+                              jenkins_username,
+                              jenkins_password)
+        build_info = ref.get_build_info(job_name,
+                                        build_number)
     except KeyError as e:
         print u"Erro ao obter build_info: {0} - {1}".format(job_name,
                                                             e.message)
+    if queue is not None:
+        queue.put(build_info)
     return build_info
 
 
@@ -57,15 +71,21 @@ def get_jobs_details(jenkins_url,
         print job
 
         builds = __get_builds_list(jenkins_reference, job)
+        pool = mp.Pool(processes=mp.cpu_count())
 
-        for build_number in builds:
-            print u'job: {1} build #{0}'.format(build_number, job)
+        results = [pool.apply_async(__get_build_info,
+                                    args=(jenkins_url,
+                                          jenkins_user,
+                                          jenkins_password,
+                                          job,
+                                          build_number,))
+                   for build_number in builds]
 
-            build_info = __get_build_info(jenkins_reference, job, build_number)
-
+        for result in results:
+            build_info = result.get()
             if build_info is not None:
                 dados_jobs.append(__converter_build_info(job,
-                                                         build_number,
+                                                         0,
                                                          build_info))
 
     return dados_jobs
