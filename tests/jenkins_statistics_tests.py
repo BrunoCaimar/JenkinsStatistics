@@ -1,7 +1,7 @@
 # coding=utf-8
 import os
 import unittest
-import jenkins_statistics
+import JenkinsStatistics.jenkins_statistics
 
 
 class JenkinsStatisticsTests(unittest.TestCase):
@@ -24,7 +24,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
                  self.job_info_factory(result="ABORTED"),
                  self.job_info_factory()]
 
-        dados = jenkins_statistics.obter_builds_por_resultado_no_mes_ano(
+        dados = JenkinsStatistics.jenkins_statistics.obter_builds_por_resultado_no_mes_ano(
             ("09/2015",),
             lista)
 
@@ -43,7 +43,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
                  self.job_info_factory(),
                  self.job_info_factory()]
 
-        dados = jenkins_statistics.obter_builds_por_resultado_no_mes_ano(
+        dados = JenkinsStatistics.jenkins_statistics.obter_builds_por_resultado_no_mes_ano(
             ("09/2015",),
             lista)
 
@@ -58,7 +58,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
         file_path = os.path.join(dir_name, "dados.json")
         lista = eval(open(file_path).read())
 
-        dados = jenkins_statistics.obter_builds_por_resultado_no_mes_ano(
+        dados = JenkinsStatistics.jenkins_statistics.obter_builds_por_resultado_no_mes_ano(
             ("08/2015",),
             lista)
 
@@ -77,7 +77,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
             dict(build_date_month=9, build_date_year=2015, job_name="Teste",
                  build=3)]
 
-        report = jenkins_statistics.gerar_summary_report_jobs_por_mes(lista)
+        report = JenkinsStatistics.jenkins_statistics.gerar_summary_report_jobs_por_mes(lista)
 
         self.assertEqual(1, len(report))
         self.assertEqual([(('09/2015', 9, 2015), 1)], report)
@@ -96,7 +96,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
             dict(build_date_month=10, build_date_year=2015,
                  job_name="Teste3", build=3)]
 
-        report = jenkins_statistics.gerar_summary_report_jobs_por_mes(lista)
+        report = JenkinsStatistics.jenkins_statistics.gerar_summary_report_jobs_por_mes(lista)
 
         self.assertEqual(2, len(report))
         self.assertEqual(
@@ -112,7 +112,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
                  build=2),
             dict(build_date_month=9, build_date_year=2015, job_name="Teste",
                  build=3)]
-        jobs = jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
+        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
                                                         lista)
         self.assertEqual(1, len(jobs))
         self.assertEqual(["Teste"], jobs)
@@ -127,7 +127,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
             dict(build_date_month=9, build_date_year=2015, job_name="Teste2",
                  build=3)]
 
-        jobs = jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
+        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
                                                         lista)
         self.assertEqual(2, len(jobs))
         self.assertEqual(["Teste", "Teste2"], jobs)
@@ -148,7 +148,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
                  job_name="Teste2",
                  build=1)]
 
-        jobs = jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
+        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
                                                         lista)
         self.assertEqual(1, len(jobs))
         self.assertEqual(["Teste"], jobs)
@@ -156,7 +156,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
     def test_agrupamento_com_apenas_um_item_deve_retornar_um_item(self):
         lista = [dict(build_date_month=9, build_date_year=2015)]
 
-        retorno = jenkins_statistics.obter_meses_disponiveis(lista)
+        retorno = JenkinsStatistics.jenkins_statistics.obter_meses_disponiveis(lista)
         self.assertEqual(1, len(retorno))
         self.assertEqual([("09/2015", 9, 2015)], retorno)
 
@@ -166,7 +166,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
                  dict(build_date_month=9, build_date_year=2015),
                  dict(build_date_month=9, build_date_year=2015)]
 
-        retorno = jenkins_statistics.obter_meses_disponiveis(lista)
+        retorno = JenkinsStatistics.jenkins_statistics.obter_meses_disponiveis(lista)
         self.assertEqual(1, len(retorno))
         self.assertEqual([("09/2015", 9, 2015)], retorno)
 
@@ -176,6 +176,6 @@ class JenkinsStatisticsTests(unittest.TestCase):
                  dict(build_date_month=9, build_date_year=2015),
                  dict(build_date_month=10, build_date_year=2015)]
 
-        retorno = jenkins_statistics.obter_meses_disponiveis(lista)
+        retorno = JenkinsStatistics.jenkins_statistics.obter_meses_disponiveis(lista)
         self.assertEqual(2, len(retorno))
         self.assertEqual([("10/2015", 10, 2015), ("09/2015", 9, 2015)], retorno)
