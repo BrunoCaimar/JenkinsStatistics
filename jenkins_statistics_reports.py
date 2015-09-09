@@ -1,5 +1,6 @@
 # coding=utf-8
 import datetime
+import jenkins_api_functions
 
 import jenkins_statistics
 import jenkins_statistics_config
@@ -9,7 +10,7 @@ def obter_dados():
     inicio = datetime.datetime.now()
     print "inicio obter dados:", inicio
 
-    dados = jenkins_statistics.get_jobs_details(
+    dados = jenkins_api_functions.get_jobs_details(
         jenkins_statistics_config.jenkins_url,
         jenkins_statistics_config.jenkins_user,
         jenkins_statistics_config.jenkins_password)
