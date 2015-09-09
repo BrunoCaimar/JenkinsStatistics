@@ -1,5 +1,4 @@
 # coding=utf-8
-import os
 import datetime
 
 import jenkins_statistics
@@ -18,13 +17,6 @@ def obter_dados():
     print u"término obter dados: ", inicio, datetime.datetime.now()
     print datetime.datetime.now() - inicio
     return dados
-
-
-def obter_dados_from_disk():
-    dir_name = os.path.dirname(__file__)
-    file_path = os.path.join(dir_name, "dados.json")
-    lista = eval(open(file_path).read())
-    return lista
 
 
 def print_reports(dados):
