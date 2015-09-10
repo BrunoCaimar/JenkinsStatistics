@@ -1,34 +1,72 @@
 # coding=utf-8
+"""
+Jenkins statistics reports generator
+
+Run it in command line after adjust configuration on jenkins_statistics_config.py file
+
+Generates a report in following format:
+
+---------------------------------------------------------------------------------------
+------------------------------- JOBS EXECUTADOS POR MÊS -------------------------------
+---------------------------------------------------------------------------------------
+01/2015 | 02/2015 | 03/2015 | 04/2015 | 05/2015 | 06/2015 | 07/2015 | 08/2015 | 09/2015
+---------------------------------------------------------------------------------------
+   8    |    7    |   15    |   12    |   12    |   15    |   16    |   31    |   30
+---------------------------------------------------------------------------------------
+
+
+-------------------------------------------------------------------------------
+-------------------------- BUILDS EXECUTADOS POR MÊS --------------------------
+-------------------------------------------------------------------------------
+|  Month/Year  |    None    |  ABORTED   |  FAILURE   |  SUCCESS   |  UNSTABLE  |
+-------------------------------------------------------------------------------
+|  01/2015  |      0     |      0     |     12     |      7     |     10     |
+-------------------------------------------------------------------------------
+
+
+"""
 import datetime
 import jenkins_api_functions
-
 import jenkins_statistics
 import jenkins_statistics_config
 
 
-def obter_dados():
+def get_data_from_jenkins():
+    """
+    Get job details from Jenkins server
+
+    :return: Job details, ``list(dict)``
+    """
     inicio = datetime.datetime.now()
-    print "inicio obter dados:", inicio
+    print "start gettting data:", inicio
 
     dados = jenkins_api_functions.get_jobs_details(
-        jenkins_statistics_config.jenkins_url,
-        jenkins_statistics_config.jenkins_user,
-        jenkins_statistics_config.jenkins_password)
+        jenkins_statistics_config.JENKINS_URL,
+        jenkins_statistics_config.JENKINS_USER,
+        jenkins_statistics_config.JENKINS_PASSWORD)
 
-    print u"término obter dados: ", inicio, datetime.datetime.now()
+    print u"fininsh getting data: ", inicio, datetime.datetime.now()
     print datetime.datetime.now() - inicio
     return dados
 
 
-def print_reports(dados):
+def print_reports(jobs_details):
+    """
+    Print reports: Jobs by month/year and Builds by month/year
+    :param jobs_details: Job details, ``list``
+    """
     print ""
-    report_jobs_por_mes(dados)
+    report_jobs_by_month(jobs_details)
     print ""
-    report_builds_por_mes(dados)
+    report_builds_by_month(jobs_details)
 
 
-def report_jobs_por_mes(dados):
-    jobs_por_mes = jenkins_statistics.gerar_summary_report_jobs_por_mes(dados)
+def report_jobs_by_month(jobs_details):
+    """
+    Print report jobs by month
+    :param jobs_details: Jobs details, ``list``
+    """
+    jobs_por_mes = jenkins_statistics.get_summary_jobs_by_month(jobs_details)
 
     sorted_data = sorted(jobs_por_mes)
 
@@ -43,7 +81,7 @@ def report_jobs_por_mes(dados):
     separador = u'{:-^' + str(len(" | ".join(titulo))) + '}'
 
     print separador.format('')
-    print separador.format(u" JOBS EXECUTADOS POR MÊS ")
+    print separador.format(u" ACTIVE JOBS BY MONTH/YEAR (Active = at least one build)")
     print separador.format('')
     print " | ".join(titulo)
     print separador.format('')
@@ -51,9 +89,12 @@ def report_jobs_por_mes(dados):
     print separador.format('')
 
 
-def report_builds_por_mes(dados):
-    builds_por_mes = jenkins_statistics.gerar_summary_report_builds_por_mes(
-        dados)
+def report_builds_by_month(jobs_details):
+    """
+    Print report builds by month/year
+    :param jobs_details: Jobs details, ``list``
+    """
+    builds_por_mes = jenkins_statistics.get_summary_builds_by_month(jobs_details)
 
     dados_2015 = [item
                   for item in builds_por_mes
@@ -67,13 +108,13 @@ def report_builds_por_mes(dados):
 
     print ""
 
-    titulo = u"|  MÊS/ANO  | " + \
+    titulo = u"|  Month/Year  | " + \
              "".join(["{0:^10} | ".format(s) for s in resultados_possiveis])
 
     separador = u'{:-^' + str(len(titulo)) + '}'
 
     print separador.format('')
-    print separador.format(u" BUILDS EXECUTADOS POR MÊS ")
+    print separador.format(u" BUILDS BY MONTH ")
     print separador.format('')
     print titulo
     print separador.format('')
@@ -92,4 +133,4 @@ def report_builds_por_mes(dados):
 
 
 if __name__ == '__main__':
-    print_reports(obter_dados())
+    print_reports(get_data_from_jenkins())
