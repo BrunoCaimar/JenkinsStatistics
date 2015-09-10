@@ -45,8 +45,8 @@ def get_data_from_jenkins():
         jenkins_statistics_config.JENKINS_USER,
         jenkins_statistics_config.JENKINS_PASSWORD)
 
-    print u"fininsh getting data: ", inicio, datetime.datetime.now()
-    print datetime.datetime.now() - inicio
+    print u"finish getting data: ", inicio, datetime.datetime.now()
+    print u"elapsed time: {0}".format(datetime.datetime.now() - inicio)
     return dados
 
 
@@ -81,7 +81,7 @@ def report_jobs_by_month(jobs_details):
     separador = u'{:-^' + str(len(" | ".join(titulo))) + '}'
 
     print separador.format('')
-    print separador.format(u" ACTIVE JOBS BY MONTH/YEAR (Active = at least one build)")
+    print separador.format(u" ACTIVE JOBS BY MONTH/YEAR (Active = at least one build) ")
     print separador.format('')
     print " | ".join(titulo)
     print separador.format('')
@@ -122,7 +122,7 @@ def report_builds_by_month(jobs_details):
     for item in dados_2015:
         result = item[1]
         mes_ano = item[0][0]
-        detalhe_mes_ano = "| {0:^10}| ".format(mes_ano)
+        detalhe_mes_ano = "| {0:^13}| ".format(mes_ano)
 
         for resultado in resultados_possiveis:
             qtd_builds = sum([r[1] for r in result if r[0] == resultado])
