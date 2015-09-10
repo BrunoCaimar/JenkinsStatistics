@@ -112,8 +112,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
                  build=2),
             dict(build_date_month=9, build_date_year=2015, job_name="Teste",
                  build=3)]
-        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
-                                                        lista)
+        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015), lista)
         self.assertEqual(1, len(jobs))
         self.assertEqual(["Teste"], jobs)
 
@@ -127,8 +126,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
             dict(build_date_month=9, build_date_year=2015, job_name="Teste2",
                  build=3)]
 
-        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
-                                                        lista)
+        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015), lista)
         self.assertEqual(2, len(jobs))
         self.assertEqual(["Teste", "Teste2"], jobs)
 
@@ -148,8 +146,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
                  job_name="Teste2",
                  build=1)]
 
-        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015),
-                                                        lista)
+        jobs = JenkinsStatistics.jenkins_statistics.obter_jobs_no_mes_ano(("09/2015", 9, 2015), lista)
         self.assertEqual(1, len(jobs))
         self.assertEqual(["Teste"], jobs)
 
