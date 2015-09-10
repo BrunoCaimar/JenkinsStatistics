@@ -40,7 +40,7 @@ Python script to extract data from a Jenkins-CI Server and generate some statist
 ## To do
 - Add trends (+/-) 
 - Reports in HTML
-- Graphics
+- Charts
 - Year selection
 
 ## Dependencies
