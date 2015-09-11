@@ -61,7 +61,7 @@ def __get_build_info(jenkins_url,
     return build_info
 
 
-def __converter_build_info(job_name, build_number, build_info):
+def __convert_build_info(job_name, build_number, build_info):
     """
     Convert build info in a dictionary like the example bellow:
 
@@ -127,7 +127,7 @@ def get_jobs_details(jenkins_url,
         for result in results:
             build_info = result.get()
             if build_info is not None:
-                dados_jobs.append(__converter_build_info(job,
+                dados_jobs.append(__convert_build_info(job,
                                                          0,
                                                          build_info))
 
