@@ -38,7 +38,7 @@ def get_data_from_jenkins():
     :return: Job details, ``list(dict)``
     """
     inicio = datetime.datetime.now()
-    print "start gettting data:", inicio
+    print "start gettting data: ", inicio
 
     dados = jenkins_api_functions.get_jobs_details(
         jenkins_statistics_config.JENKINS_URL,
@@ -50,20 +50,23 @@ def get_data_from_jenkins():
     return dados
 
 
-def print_reports(jobs_details):
+def print_reports(jobs_details, year):
     """
+
+    :param year: Year to select
     Print reports: Jobs by month/year and Builds by month/year
     :param jobs_details: Job details, ``list``
     """
     print ""
-    report_jobs_by_month(jobs_details)
+    summary_jobs_by_month(jobs_details, year)
     print ""
-    report_builds_by_month(jobs_details)
+    summary_builds_by_month(jobs_details, year)
 
 
-def report_jobs_by_month(jobs_details):
+def summary_jobs_by_month(jobs_details, year):
     """
     Print report jobs by month
+    :param year: Year to report, ``int``
     :param jobs_details: Jobs details, ``list``
     """
     jobs_por_mes = jenkins_statistics.get_summary_jobs_by_month(jobs_details)
@@ -72,11 +75,11 @@ def report_jobs_by_month(jobs_details):
 
     titulo = [item[0][0]
               for item in sorted_data
-              if item[0][2] == 2015]
+              if item[0][2] == year]
 
     detalhe = ["{0:^7}".format(item[1])
                for item in sorted_data
-               if item[0][2] == 2015]
+               if item[0][2] == year]
 
     separador = u'{:-^' + str(len(" | ".join(titulo))) + '}'
 
@@ -89,19 +92,20 @@ def report_jobs_by_month(jobs_details):
     print separador.format('')
 
 
-def report_builds_by_month(jobs_details):
+def summary_builds_by_month(jobs_details, year):
     """
     Print report builds by month/year
+    :param year: Year to select data, ``int``
     :param jobs_details: Jobs details, ``list``
     """
     builds_por_mes = jenkins_statistics.get_summary_builds_by_month(jobs_details)
 
-    dados_2015 = [item
-                  for item in builds_por_mes
-                  if item[0][2] == 2015]
+    selected_data = [item
+                     for item in builds_por_mes
+                     if item[0][2] == year]
 
     resultado = []
-    for result in [item[1] for item in dados_2015]:
+    for result in [item[1] for item in selected_data]:
         resultado += [s[0] for s in result]
 
     resultados_possiveis = sorted(list(set(resultado)))
@@ -119,7 +123,7 @@ def report_builds_by_month(jobs_details):
     print titulo
     print separador.format('')
 
-    for item in dados_2015:
+    for item in selected_data:
         result = item[1]
         mes_ano = item[0][0]
         detalhe_mes_ano = "| {0:^13}| ".format(mes_ano)
@@ -133,4 +137,4 @@ def report_builds_by_month(jobs_details):
 
 
 if __name__ == '__main__':
-    print_reports(get_data_from_jenkins())
+    print_reports(get_data_from_jenkins(), 2015)
