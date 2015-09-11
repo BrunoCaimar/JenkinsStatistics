@@ -128,7 +128,7 @@ def get_jobs_details(jenkins_url,
             build_info = result.get()
             if build_info is not None:
                 dados_jobs.append(__convert_build_info(job,
-                                                         0,
-                                                         build_info))
+                                                       0,
+                                                       build_info))
 
     return dados_jobs
