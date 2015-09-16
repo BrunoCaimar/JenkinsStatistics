@@ -1,10 +1,12 @@
 # coding=utf-8
 import os
 import unittest
+from JenkinsStatistics import jenkins_statistics_reports
 import JenkinsStatistics.jenkins_statistics
 
 
 class JenkinsStatisticsTests(unittest.TestCase):
+
     def job_info_factory(self,
                          month=9,
                          year=2015,
@@ -54,9 +56,7 @@ class JenkinsStatisticsTests(unittest.TestCase):
 
     def test_obter_builds_por_resultado_no_mes_ano_para_dados_conhecidos_deve_retornar_resultado_conhecido(
             self):
-        dir_name = os.path.dirname(__file__)
-        file_path = os.path.join(dir_name, "dados.json")
-        lista = eval(open(file_path).read())
+        lista = self.get_data_2_test()
 
         dados = JenkinsStatistics.jenkins_statistics.get_builds_per_result(
             ("08/2015",),
@@ -176,3 +176,18 @@ class JenkinsStatisticsTests(unittest.TestCase):
         retorno = JenkinsStatistics.jenkins_statistics.get_available_months(lista)
         self.assertEqual(2, len(retorno))
         self.assertEqual([("10/2015", 10, 2015), ("09/2015", 9, 2015)], retorno)
+
+    def test_top_jobs_by_builds_should_return_expected_values(self):
+        details = self.get_data_2_test()
+        expected_values = [(20, u'CVTS'),
+                           (14, u'LuzesDaCidade'),
+                           (11, u'VV-CoberturaMassiva')]
+
+        top = JenkinsStatistics.jenkins_statistics.top_jobs_by_builds(details, 2015, 9)
+        self.assertEqual(expected_values, top)
+
+    def get_data_2_test(self):
+        dir_name = os.path.dirname(__file__)
+        file_path = os.path.join(dir_name, "dados.json")
+        details = eval(open(file_path).read())
+        return details

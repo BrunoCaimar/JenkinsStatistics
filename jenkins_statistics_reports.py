@@ -26,6 +26,7 @@ Generates a report in following format:
 
 """
 import datetime
+
 import jenkins_api_functions
 import jenkins_statistics
 import jenkins_statistics_config
@@ -61,6 +62,40 @@ def print_reports(jobs_details, year):
     summary_jobs_by_month(jobs_details, year)
     print ""
     summary_builds_by_month(jobs_details, year)
+    print ""
+
+    month = datetime.datetime.now().month
+    print top_jobs(jobs_details, year, month)
+    print ""
+
+    month_before = datetime.datetime.now().month - 1 if datetime.datetime.now().month > 1 else 12
+    year_before = year if datetime.datetime.now().month > 1 else year - 1
+
+    print top_jobs(jobs_details, year_before, month_before)
+    print ""
+
+
+def top_jobs(jobs_details, year, month):
+    """
+    Print top jobs by year/month
+    :param jobs_details: Jobs
+    :param year: Year
+    :param month: Month
+    """
+    titulo = u"|  TOP JOBS BY BUILDS: {0}  |".format(jenkins_statistics.get_formatted_month_year(month, year))
+
+    separador = u'{:-^' + str(len(titulo)+40) + '}'
+    separador_detalhe = u'| {:^' + str(len(titulo) + 40 - 4) + '} |'
+
+    print separador.format('')
+    print titulo
+    print separador.format('')
+
+    tops = jenkins_statistics.top_jobs_by_builds(jobs_details, year, month)
+    for job in tops:
+        print separador_detalhe.format("{0}: {1}".format(job[1], job[0]))
+
+    print separador.format('')
 
 
 def summary_jobs_by_month(jobs_details, year):
