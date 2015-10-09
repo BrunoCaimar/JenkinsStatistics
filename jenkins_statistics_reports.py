@@ -26,6 +26,7 @@ Generates a report in following format:
 
 """
 import datetime
+from jenkins_date_range_functions import get_months_array, get_starting_month
 
 import jenkins_api_functions
 import jenkins_statistics
@@ -51,29 +52,26 @@ def get_data_from_jenkins():
     return dados
 
 
-def print_reports(jobs_details, year):
+def print_reports(jobs_details):
     """
 
-    :param year: Year to select
     Print reports: Jobs by month/year and Builds by month/year
     :param jobs_details: Job details, ``list``
     """
+    date_range = get_months_array(get_starting_month(jenkins_statistics_config.NUMBER_OF_MONTHS_TO_GET_DATA,
+                                                    jenkins_statistics_config.INCLUDE_ACTUAL_MONTH),
+                                  jenkins_statistics_config.NUMBER_OF_MONTHS_TO_GET_DATA)
+
     print ""
-    summary_jobs_by_month(jobs_details, year)
+    summary_jobs_by_month(jobs_details, date_range)
     print ""
-    summary_builds_by_month(jobs_details, year)
+    summary_builds_by_month(jobs_details, date_range)
     print ""
 
-    month = datetime.datetime.now().month
-    print top_jobs(jobs_details, year, month)
-    print ""
-
-    month_before = datetime.datetime.now().month - 1 if datetime.datetime.now().month > 1 else 12
-    year_before = year if datetime.datetime.now().month > 1 else year - 1
-
-    print top_jobs(jobs_details, year_before, month_before)
-    print ""
-
+    date_range.reverse()
+    for item in range(2):
+        print top_jobs(jobs_details, date_range[item][1], date_range[item][0])
+        print ""
 
 def top_jobs(jobs_details, year, month):
     """
@@ -84,7 +82,7 @@ def top_jobs(jobs_details, year, month):
     """
     titulo = u"|  TOP JOBS BY BUILDS: {0}  |".format(jenkins_statistics.get_formatted_month_year(month, year))
 
-    separador = u'{:-^' + str(len(titulo)+40) + '}'
+    separador = u'{:-^' + str(len(titulo) + 40) + '}'
     separador_detalhe = u'| {:^' + str(len(titulo) + 40 - 4) + '} |'
 
     print separador.format('')
@@ -98,10 +96,10 @@ def top_jobs(jobs_details, year, month):
     print separador.format('')
 
 
-def summary_jobs_by_month(jobs_details, year):
+def summary_jobs_by_month(jobs_details, date_range):
     """
     Print report jobs by month
-    :param year: Year to report, ``int``
+    :param date_range: Date range to report
     :param jobs_details: Jobs details, ``list``
     """
     jobs_por_mes = jenkins_statistics.get_summary_jobs_by_month(jobs_details)
@@ -110,11 +108,14 @@ def summary_jobs_by_month(jobs_details, year):
 
     titulo = [item[0][0]
               for item in sorted_data
-              if item[0][2] == year]
+              if (item[0][1], item[0][2]) in date_range]
+
+    if len(titulo) == 0:
+        return
 
     detalhe = ["{0:^7}".format(item[1])
                for item in sorted_data
-               if item[0][2] == year]
+               if (item[0][1], item[0][2]) in date_range]
 
     separador = u'{:-^' + str(len(" | ".join(titulo))) + '}'
 
@@ -127,17 +128,17 @@ def summary_jobs_by_month(jobs_details, year):
     print separador.format('')
 
 
-def summary_builds_by_month(jobs_details, year):
+def summary_builds_by_month(jobs_details, date_range):
     """
     Print report builds by month/year
-    :param year: Year to select data, ``int``
+    :param year: Date Range to select data
     :param jobs_details: Jobs details, ``list``
     """
     builds_por_mes = jenkins_statistics.get_summary_builds_by_month(jobs_details)
 
     selected_data = [item
                      for item in builds_por_mes
-                     if item[0][2] == year]
+                     if (item[0][1], item[0][2]) in date_range]
 
     resultado = []
     for result in [item[1] for item in selected_data]:
@@ -172,4 +173,6 @@ def summary_builds_by_month(jobs_details, year):
 
 
 if __name__ == '__main__':
-    print_reports(get_data_from_jenkins(), 2015)
+    print_reports(get_data_from_jenkins())
+
+
