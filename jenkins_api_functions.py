@@ -55,9 +55,10 @@ def __get_build_info(jenkins_url,
                               jenkins_password)
         build_info = ref.get_build_info(job_name,
                                         build_number)
+
     except Exception as exception:
         print u"Erro ao obter build_info: {0} - {1}".format(job_name,
-                                                            exception.message)
+                                                            unicode(exception.message, errors='ignore'))
     return build_info
 
 
