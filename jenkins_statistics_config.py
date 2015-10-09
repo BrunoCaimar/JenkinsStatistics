@@ -10,3 +10,6 @@ JENKINS_PASSWORD: Password to access Jenkins server (if needed). Default: None
 JENKINS_URL = "https://ci.jenkins-ci.org/"
 JENKINS_USER = None
 JENKINS_PASSWORD = None
+
+NUMBER_OF_MONTHS_TO_GET_DATA = 6
+INCLUDE_ACTUAL_MONTH = True
