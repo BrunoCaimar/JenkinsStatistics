@@ -35,17 +35,18 @@ Python script to extract data from a Jenkins-CI Server and generate some statist
 -- Add url on jenkins_url
 -- Add user and password (if necessary )
 
+-- Change the number of month's that you want to report
+-- Inform if you want to include the current month 
+
 - Run jenkins_statistics_reports.py
 
 ## To do
-- Add trends (+/-) 
 - Reports in HTML
-- Charts
-- Year selection
+- Add parameters using command line params 
 
 ## Dependencies
+- Python Jenkins Library - https://pypi.python.org/pypi/python-jenkins
 
 ## License
-
-## Issues
+- MIT License 
 
