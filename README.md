@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/BrunoCaimar/JenkinsStatistics.svg)](https://travis-ci.org/BrunoCaimar/JenkinsStatistics)
 [![Coverage Status](https://coveralls.io/repos/BrunoCaimar/JenkinsStatistics/badge.svg?branch=master&service=github)](https://coveralls.io/github/BrunoCaimar/JenkinsStatistics?branch=master)
+[![Code Health](https://landscape.io/github/BrunoCaimar/JenkinsStatistics/master/landscape.svg?style=flat)](https://landscape.io/github/BrunoCaimar/JenkinsStatistics/master)
 
 ## JenkinsStatistics
 Generate some statistics from a Jenkins CI Server
