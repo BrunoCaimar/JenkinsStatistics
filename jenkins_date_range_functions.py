@@ -36,7 +36,7 @@ def get_starting_month(number_of_months_to_get,
     :param include_actual_month: Include actual month? e.g.: True
     :param actual_date: Actual Date e.g: now()
     :return: :raise Exception: if number_of_months_to_get less than 1
-    Initial month\year e.g: (12,2014)
+    Initial month & year e.g: (12,2014)
     """
     if number_of_months_to_get <= 0:
         raise Exception("Number of month's to get should be greater than 0")
