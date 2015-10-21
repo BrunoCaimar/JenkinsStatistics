@@ -4,7 +4,10 @@ python:
 # - "3.5"   To Do - Add support to it !
 # - "pypy"  To Do - Check about it later
 # command to install dependencies
-install: "pip install -r requirements.txt"
+install:
+  - "pip install -r requirements.txt"
+  - pip install pep8
+  - pip install pylint
 # command to run tests
 script:
   - pep8 .
