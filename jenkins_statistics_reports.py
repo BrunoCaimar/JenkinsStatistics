@@ -59,7 +59,7 @@ def print_reports(jobs_details):
     :param jobs_details: Job details, ``list``
     """
     date_range = get_months_array(get_starting_month(jenkins_statistics_config.NUMBER_OF_MONTHS_TO_GET_DATA,
-                                                    jenkins_statistics_config.INCLUDE_ACTUAL_MONTH),
+                                  jenkins_statistics_config.INCLUDE_ACTUAL_MONTH),
                                   jenkins_statistics_config.NUMBER_OF_MONTHS_TO_GET_DATA)
 
     print ""
@@ -72,6 +72,7 @@ def print_reports(jobs_details):
     for item in range(2):
         print top_jobs(jobs_details, date_range[item][1], date_range[item][0])
         print ""
+
 
 def top_jobs(jobs_details, year, month):
     """
@@ -174,5 +175,3 @@ def summary_builds_by_month(jobs_details, date_range):
 
 if __name__ == '__main__':
     print_reports(get_data_from_jenkins())
-
-
