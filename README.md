@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/BrunoCaimar/JenkinsStatistics.svg)](https://travis-ci.org/BrunoCaimar/JenkinsStatistics)
+
 ## JenkinsStatistics
 Generate some statistics from a Jenkins CI Server
 
