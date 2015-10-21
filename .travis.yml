@@ -2,7 +2,7 @@ language: python
 python:
   - "2.7"
   - "3.5"
-  - "pypy"
+# - "pypy"  ToDo - Check about it later
 # command to install dependencies
 install: "pip install -r requirements.txt"
 # command to run tests
