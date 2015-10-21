@@ -1,7 +1,7 @@
 ## JenkinsStatistics
 Generate some statistics from a Jenkins CI Server
 
-## What is it? 
+## What is this? 
 Python script to extract data from a Jenkins-CI Server and generate some statistics like:
 
 ```python
@@ -38,7 +38,7 @@ Python script to extract data from a Jenkins-CI Server and generate some statist
 -------------------------------------------------------------------------
 ```
 
-# How to use it? 
+# How to use? 
 - Config jenkins_statistics_config.py
 
 -- Add url on jenkins_url
