@@ -59,7 +59,9 @@ Python script to extract data from a Jenkins-CI Server and generate some statist
 - Python Jenkins Library - https://pypi.python.org/pypi/python-jenkins
 
 ```python
-pip install python-jenkins
+pip install python-jenkins 
+or 
+pip install -r requirements.txt
 ```
 
 ## License
